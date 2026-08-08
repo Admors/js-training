@@ -1517,6 +1517,715 @@
       ],
       "correct": 1,
       "explain": "map() prend le callback (valeur, index, tableauOriginal) et construit un nouveau tableau à partir des valeurs traitées : chaque élément se retrouve incrémenté de 1 dans le tableau résultant."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Que se passe-t-il à l'exécution de ce code ?",
+      "code": "const grand = 9007199254740992n;\nconst normal = 1;\ntry {\n  const somme = grand + normal;\n  console.log(somme);\n} catch (e) {\n  console.log(\"Erreur :\", e.constructor.name);\n}\nconsole.log(grand + 1n);",
+      "options": [
+        "\"Erreur : RangeError\" puis 9007199254740993n",
+        "\"Erreur : TypeError\" puis 9007199254740993n",
+        "9007199254740993 puis 9007199254740993n",
+        "9007199254740993n puis 9007199254740993n"
+      ],
+      "correct": 1,
+      "explain": "On ne peut pas mélanger BigInt et Number avec les opérateurs arithmétiques : ça lève un TypeError. En revanche grand + 1n (deux BigInt) fonctionne et donne 9007199254740993n."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Analysez ce code et déterminez les valeurs affichées :",
+      "code": "const config = {\n  timeout: 0,\n  retries: null\n};\nconst t1 = config.timeout || 5000;\nconst t2 = config.timeout ?? 5000;\nconst r1 = config.retries || 3;\nconst r2 = config.retries ?? 3;\nconsole.log(t1, t2, r1, r2);",
+      "options": [
+        "5000 / 0 / 3 / 3",
+        "0 / 0 / 3 / 3",
+        "5000 / 0 / null / 3",
+        "5000 / 5000 / 3 / 3"
+      ],
+      "correct": 0,
+      "explain": "|| considère 0 comme falsy et le remplace par 5000, alors que ?? ne remplace que null/undefined et garde donc 0. retries est null : || et ?? le remplacent tous deux par 3."
+    },
+    {
+      "cat": "types",
+      "type": "text",
+      "q": "Quelle valeur est affichée par ce code ?",
+      "code": "console.log(\"20\" - 8);",
+      "accept": [
+        "12"
+      ],
+      "explain": "Contrairement à +, l'opérateur - force la conversion numérique des deux opérandes : \"20\" devient 20, donc 20 - 8 = 12."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Quel est le résultat affiché par ce code ?",
+      "code": "const quantite = 10;\nconst rabais = \"5\";\nconst resultat = quantite + rabais;\nconsole.log(resultat);\nconsole.log(typeof resultat);",
+      "options": [
+        "15 / \"number\"",
+        "\"105\" / \"string\"",
+        "NaN / \"number\"",
+        "10 / \"number\""
+      ],
+      "correct": 1,
+      "explain": "Avec +, dès qu'un opérande est une chaîne, JavaScript convertit l'autre en chaîne et concatène : 10 + \"5\" donne \"105\", de type \"string\" (contrairement à -, *, / qui forcent une conversion numérique)."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Que s'affiche-t-il dans la console ?",
+      "code": "console.log(typeof calculer);\nconsole.log(calculer(4));\nvar calculer = function(x) {\n  return x * x;\n};\nconsole.log(calculer(4));",
+      "options": [
+        "\"undefined\" puis une TypeError est levée.",
+        "\"undefined\", undefined, 16",
+        "Une ReferenceError est levée sur la première ligne car calculer n'existe pas encore.",
+        "\"function\", 16, 16"
+      ],
+      "correct": 0,
+      "explain": "var calculer est hoisté et vaut undefined tant que l'affectation n'a pas eu lieu : typeof calculer vaut \"undefined\" avant l'affectation. Mais ici l'appel calculer(4) est fait juste après, alors que calculer vaut encore undefined à ce moment précis (avant la ligne d'affectation) : appeler undefined(4) lève une TypeError. Le premier log affiche donc \"undefined\", puis l'exécution s'arrête avec une erreur avant d'atteindre le second et le troisième console.log."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Que va afficher ce code ?",
+      "code": "console.log(0 ?? \"défaut\");",
+      "options": [
+        "null",
+        "undefined",
+        "\"défaut\"",
+        "0"
+      ],
+      "correct": 3,
+      "explain": "?? ne remplace que null ou undefined. 0 n'est ni l'un ni l'autre (contrairement à ||, qui l'aurait remplacé car 0 est falsy) : le résultat est donc 0."
+    },
+    {
+      "cat": "types",
+      "type": "text",
+      "q": "Quelle valeur est affichée par ce code ?",
+      "code": "console.log(parseInt(\"10\", 2));",
+      "accept": [
+        "2"
+      ],
+      "explain": "Le second argument de parseInt() est la base. \"10\" interprété en base 2 (binaire) vaut 1×2 + 0 = 2."
+    },
+    {
+      "cat": "types",
+      "type": "mcq",
+      "q": "Un développeur récupère des données d'un formulaire HTML (toujours des chaînes) et effectue un calcul. Que valent total1, total2 et total3 ?",
+      "code": "const prixSaisi = \"29\";\nconst quantiteSaisie = \"3\";\nconst total1 = prixSaisi + quantiteSaisie;\nconst total2 = prixSaisi * quantiteSaisie;\nconst total3 = Number(prixSaisi) + Number(quantiteSaisie);\nconsole.log(total1, typeof total1);\nconsole.log(total2, typeof total2);\nconsole.log(total3, typeof total3);",
+      "options": [
+        "\"293\" (string) / 87 (number) / 32 (number)",
+        "32 (number) / 87 (number) / 32 (number)",
+        "\"293\" (string) / \"87\" (string) / 32 (number)",
+        "NaN / 87 (number) / 32 (number)"
+      ],
+      "correct": 0,
+      "explain": "+ concatène deux chaînes (\"29\"+\"3\"=\"293\"). * force une conversion numérique implicite (29*3=87). Number() convertit explicitement avant d'additionner (29+3=32). La conversion explicite (total3) est l'approche la plus fiable et la plus lisible pour calculer un total."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Observez le code suivant :",
+      "code": "const handlers = [];\nfor (var i = 0; i < 3; i++) {\n  handlers.push(function() {\n    return i * 10;\n  });\n}\nconsole.log(handlers[0]());\nconsole.log(handlers[1]());\nconsole.log(handlers[2]());",
+      "options": [
+        "10, 20, 30",
+        "0, 10, 20",
+        "0, 0, 0",
+        "30, 30, 30"
+      ],
+      "correct": 3,
+      "explain": "var n'a pas de portée de bloc : les trois fonctions partagent la même variable i, qui vaut 3 à la fin de la boucle. i*10 = 30 pour chacune (avec let, on aurait obtenu 0, 10, 20)."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Observez le code suivant :",
+      "code": "function creerPaire() {\n  let score = 0;\n  const incrementer = () => ++score;\n  const lire = () => score;\n  return { incrementer, lire };\n}\nconst p1 = creerPaire();\nconst p2 = creerPaire();\np1.incrementer();\np1.incrementer();\np2.incrementer();\nconsole.log(p1.lire());\nconsole.log(p2.lire());",
+      "options": [
+        "3 puis 3",
+        "2 puis 1",
+        "0 puis 0",
+        "2 puis 3"
+      ],
+      "correct": 1,
+      "explain": "Chaque appel à creerPaire() crée une nouvelle closure avec sa propre variable score. p1 et p2 sont indépendants : p1 vaut 2 (deux incréments), p2 vaut 1 (un seul)."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Que s'affiche-t-il dans la console ?",
+      "code": "const niveau = 2;\nswitch (niveau) {\n  case 1:\n    console.log(\"Débutant\");\n    break;\n  case 2:\n    console.log(\"Intermédiaire\");\n  case 3:\n    console.log(\"Avancé\");\n    break;\n  default:\n    console.log(\"Expert\");\n}",
+      "options": [
+        "\"Intermédiaire\" puis \"Avancé\"",
+        "\"Intermédiaire\" uniquement",
+        "\"Intermédiaire\", \"Avancé\", puis \"Expert\"",
+        "\"Avancé\" uniquement"
+      ],
+      "correct": 0,
+      "explain": "Sans break après case 2, l'exécution continue (fallthrough) dans le case suivant : \"Intermédiaire\" puis \"Avancé\" s'affichent, et le break de case 3 arrête ensuite l'exécution."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Quelle syntaxe est correcte pour créer un objet avec une méthode ?",
+      "options": [
+        "let obj = { nom: \"Test\", function afficher() { return this.nom; } };",
+        "let obj = { nom: \"Test\", afficher: function() { return this.nom; } };",
+        "let obj = new Object(nom: \"Test\", afficher: function() { return this.nom; });",
+        "let obj = { nom: \"Test\", afficher() => { return this.nom; } };"
+      ],
+      "correct": 1,
+      "explain": "Une méthode d'objet littéral s'écrit soit avec la syntaxe raccourcie afficher() {...}, soit en assignant une fonction à une propriété : afficher: function() {...}."
+    },
+    {
+      "cat": "fn",
+      "type": "text",
+      "q": "Quelle valeur affiche console.log ?",
+      "code": "function journaliser(niveau, ...messages) {\n  return messages.length;\n}\nconsole.log(journaliser(\"INFO\", \"Démarrage\", \"Connexion\", \"Prêt\"));",
+      "accept": [
+        "3"
+      ],
+      "explain": "Le paramètre rest ...messages capture tous les arguments après niveau, soit 3 éléments (\"Démarrage\", \"Connexion\", \"Prêt\")."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Que retourne l'appel à multiplie(2, 3) ?",
+      "code": "let multiplie = (v, n) => { v * n };",
+      "options": [
+        "undefined",
+        "6",
+        "la fonction anonyme () => { 2 * 3 }",
+        "NaN"
+      ],
+      "correct": 0,
+      "explain": "Avec des accolades, le corps de la fonction fléchée est un bloc d'instructions classique : sans return explicite, la fonction renvoie undefined (le v * n est calculé mais jamais retourné)."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Dans ce code, quand le bloc catch sera-t-il exécuté ?",
+      "code": "fetch('/api/users')\n  .then(response => {\n    if (!response.ok) throw new Error('Erreur HTTP');\n    return response.json();\n  })\n  .then(data => console.log(data))\n  .catch(error => console.error('Problème:', error));",
+      "options": [
+        "Seulement si le serveur retourne un code 500",
+        "Si fetch échoue OU si response.ok est false OU si le parsing JSON échoue",
+        "Jamais, car fetch ne génère pas d'erreur",
+        "Seulement si fetch échoue (erreur réseau)"
+      ],
+      "correct": 1,
+      "explain": "catch() intercepte toute erreur survenant dans la chaîne : échec réseau du fetch, l'erreur levée manuellement quand response.ok est false, ou une erreur de parsing JSON."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Quelle méthode d'une promesse est utilisée pour gérer les erreurs ?",
+      "options": [
+        "then()",
+        "catch()",
+        "finally()",
+        "error()"
+      ],
+      "correct": 1,
+      "explain": "catch() est un raccourci de .then(undefined, onRejected) : il intercepte les rejets d'une Promise."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Dans quel ordre s'affichent ces messages ?",
+      "code": "console.log(\"1\");\nsetTimeout(() => console.log(\"2\"), 0);\nPromise.resolve()\n  .then(() => console.log(\"3\"))\n  .then(() => console.log(\"4\"));\nPromise.resolve().then(() => console.log(\"5\"));\nconsole.log(\"6\");",
+      "options": [
+        "1, 2, 3, 4, 5, 6",
+        "1, 6, 2, 3, 5, 4",
+        "1, 6, 3, 5, 4, 2",
+        "1, 6, 3, 4, 5, 2"
+      ],
+      "correct": 2,
+      "explain": "Le code synchrone passe en premier (1, 6). Puis les microtasks : le premier .then (\"3\") et le then du second Promise.resolve() (\"5\") étaient déjà en file, donc ils s'exécutent avant le second .then de la première chaîne (\"4\"), qui n'est mis en file qu'après l'exécution de \"3\". Enfin le setTimeout (\"2\"), un macrotask, passe en dernier."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Que fait ce code ?",
+      "code": "for (let i = 0; i < 3; i++) {\n  await fetch(`/api/data/${i}`);\n}",
+      "options": [
+        "Ne fonctionne pas, await ne peut pas être dans une boucle",
+        "Exécute 3 requêtes séquentiellement (une après l'autre)",
+        "Exécute 3 requêtes en parallèle"
+      ],
+      "correct": 1,
+      "explain": "Chaque await met en pause l'exécution de la boucle jusqu'à la résolution de la requête en cours : les 3 fetch se font donc l'un après l'autre, pas en parallèle (contrairement à Promise.all)."
+    },
+    {
+      "cat": "async",
+      "type": "text",
+      "q": "Quelle valeur est affichée par ce code ?",
+      "code": "async function test() {\n  const val = await Promise.resolve(99)\n    .finally(() => 0)\n    .then(x => x + 1);\n  console.log(val);\n}\ntest();",
+      "accept": [
+        "100"
+      ],
+      "explain": "finally() ne modifie jamais la valeur transmise dans la chaîne : la valeur retournée par son callback (0) est ignorée. La Promise garde donc sa valeur résolue 99, et le .then() suivant l'incrémente : 99 + 1 = 100."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Quelle est la différence entre Promise.all et Promise.allSettled ?",
+      "options": [
+        "allSettled ne peut traiter que les promesses résolues",
+        "allSettled est plus rapide que all",
+        "allSettled attend toutes les promesses même en cas d'échec, all s'arrête au premier échec"
+      ],
+      "correct": 2,
+      "explain": "Promise.all rejette dès qu'une seule promesse échoue, sans attendre les autres. Promise.allSettled attend toujours que toutes les promesses se terminent (résolues ou rejetées) et renvoie le détail de chacune."
+    },
+    {
+      "cat": "async",
+      "type": "text",
+      "q": "Quel est l'affichage produit par ce code ?",
+      "code": "async function run() {\n  const val = await Promise.resolve(7);\n  console.log(val * 3);\n}\nrun();",
+      "accept": [
+        "21"
+      ],
+      "explain": "await Promise.resolve(7) déballe la valeur résolue 7, puis val * 3 = 21."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Quelle est la bonne syntaxe pour définir une classe en ES6 ?",
+      "options": [
+        "class Personne { constructor(nom) { this.nom = nom; } }",
+        "function Personne(nom) { this.nom = nom; }",
+        "class Personne() { constructor(nom) { this.nom = nom; } }",
+        "class Personne { function constructor(nom) { this.nom = nom; } }"
+      ],
+      "correct": 0,
+      "explain": "Une classe ES6 se déclare avec class Nom { ... }, sans parenthèses après le nom, et le constructeur s'écrit constructor(...) sans le mot-clé function."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Considérez ce code TypeScript compilé et exécuté. Quelle est la sortie affichée ?",
+      "code": "enum Etat {\n  Actif = \"ACTIF\",\n  Inactif = \"INACTIF\",\n  Suspendu = \"SUSPENDU\"\n}\nconst statut: Etat = Etat.Actif;\nconsole.log(statut === \"ACTIF\");\nconsole.log(statut);",
+      "options": [
+        "false puis \"Actif\"",
+        "false puis \"ACTIF\"",
+        "true puis \"ACTIF\"",
+        "true puis 0"
+      ],
+      "correct": 2,
+      "explain": "Un enum à valeurs string vaut littéralement la chaîne assignée : Etat.Actif est \"ACTIF\". La comparaison est donc true, et le second log affiche \"ACTIF\"."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Considérez ce code TypeScript :",
+      "code": "const enum Saison {\n  Printemps,\n  Ete,\n  Automne,\n  Hiver\n}\nlet saisonActuelle = Saison.Ete;\nconsole.log(saisonActuelle);",
+      "options": [
+        "2",
+        "\"Ete\"",
+        "1",
+        "Erreur à l'exécution car const enum n'existe pas en JavaScript"
+      ],
+      "correct": 2,
+      "explain": "Un enum numérique commence à 0 par défaut : Printemps=0, Ete=1, Automne=2, Hiver=3. Saison.Ete vaut donc 1. Un const enum se comporte comme un enum classique à l'exécution, à la différence qu'il est entièrement supprimé à la compilation : sa valeur numérique (1) est inlinée directement dans le code JavaScript généré."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Que produit ce code ?",
+      "code": "const Archivable = (Base) => class extends Base {\n  archiver() {\n    return `${this.nom} archivé le ${new Date().getFullYear()}`;\n  }\n};\nclass Document {\n  constructor(nom) {\n    this.nom = nom;\n  }\n}\nclass Contrat extends Archivable(Document) {\n  constructor(nom, parties) {\n    super(nom);\n    this.parties = parties;\n  }\n}\nconst c = new Contrat('Bail', ['Alice', 'Bob']);\nconsole.log(c instanceof Document);\nconsole.log(typeof c.archiver);",
+      "options": [
+        "false, 'function'",
+        "Une erreur est levée car Contrat ne peut pas étendre une fonction.",
+        "true, 'undefined'",
+        "true, 'function'"
+      ],
+      "correct": 3,
+      "explain": "Archivable est un mixin : une fonction qui prend une classe de base et retourne une nouvelle classe qui en hérite. Contrat étend donc bien Document (instanceof true) et possède la méthode archiver (typeof 'function')."
+    },
+    {
+      "cat": "oop",
+      "type": "text",
+      "q": "Dans le constructeur d'une classe enfant, quel mot-clé (suivi de parenthèses) permet d'appeler le constructeur de la classe parente ?",
+      "accept": [
+        "super()",
+        "super"
+      ],
+      "explain": "super() appelle le constructeur de la classe parente ; il doit être appelé avant d'utiliser this dans le constructeur enfant."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Un développeur a écrit ce générateur censé produire les multiples d'un nombre jusqu'à une limite. Quel est le problème conceptuel de son utilisation des générateurs ?",
+      "code": "function* multiplesJusqua(base, limite) {\n  const resultats = [];\n  let n = base;\n  while (n <= limite) {\n    resultats.push(n);\n    n += base;\n  }\n  yield resultats;\n}\nfor (const val of multiplesJusqua(3, 15)) {\n  console.log(val);\n}",
+      "options": [
+        "Aucun problème : le générateur fonctionne exactement comme prévu, il yield chaque multiple un par un.",
+        "Le yield est placé en dehors de la boucle : au lieu de produire les valeurs une à une à la demande, le générateur construit tout le tableau puis ne le yield qu'une seule fois — l'intérêt même d'un générateur (paresse, itération valeur par valeur) est perdu.",
+        "while ne peut pas être utilisé à l'intérieur d'une fonction génératrice.",
+        "Il manque un return final après la boucle pour terminer le générateur correctement."
+      ],
+      "correct": 1,
+      "explain": "La version idiomatique place yield n; à l'intérieur de la boucle (et retire le tableau intermédiaire) afin de produire chaque multiple un par un, au fur et à mesure : while (n <= limite) { yield n; n += base; }."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Analysez ce code. Quelle est la valeur de total après 3 clics ?",
+      "code": "const btn = document.querySelector('#envoyer');\nlet total = 0;\nbtn.addEventListener('click', () => { total += 10; }, { once: true });\nbtn.addEventListener('click', () => { total += 1; });\n// L'utilisateur clique 3 fois sur le bouton\nconsole.log(total);",
+      "options": [
+        "13",
+        "11",
+        "33",
+        "3"
+      ],
+      "correct": 0,
+      "explain": "{ once: true } fait que le premier listener (+10) ne s'exécute qu'au premier clic, puis se retire automatiquement. Le second listener (+1) s'exécute à chaque clic : 10 + 1 + 1 + 1 = 13."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Considérez ce HTML et ce script (délégation d'événements). L'utilisateur clique sur le texte \"Produits\". Que s'affiche-t-il dans la console ?",
+      "code": "<ul id=\"menu\">\n  <li data-id=\"1\">Accueil</li>\n  <li data-id=\"2\">Produits</li>\n  <li data-id=\"3\">Contact</li>\n</ul>\n\ndocument.getElementById('menu').addEventListener('click', function(event) {\n  console.log('target:', event.target.tagName);\n  console.log('currentTarget:', event.currentTarget.tagName);\n});",
+      "options": [
+        "target: \"LI\" / currentTarget: \"UL\"",
+        "target: \"LI\" / currentTarget: \"LI\"",
+        "target: \"UL\" / currentTarget: \"UL\"",
+        "target: \"UL\" / currentTarget: \"LI\""
+      ],
+      "correct": 0,
+      "explain": "event.target est l'élément réellement cliqué (le <li>), alors que event.currentTarget est l'élément sur lequel le listener est attaché (le <ul>, grâce à la délégation d'événements)."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Considérez ce HTML et ce script. Si la page est hébergée à https://exemple.be, que s'affiche-t-il dans la console ?",
+      "code": "<a id=\"lien\" href=\"/accueil\">Accueil</a>\n\nconst lien = document.getElementById('lien');\nconsole.log(lien.getAttribute('href'));\nconsole.log(lien.href);",
+      "options": [
+        "null / undefined",
+        "\"https://exemple.be/accueil\" / \"https://exemple.be/accueil\"",
+        "\"/accueil\" / \"https://exemple.be/accueil\"",
+        "\"/accueil\" / \"/accueil\""
+      ],
+      "correct": 2,
+      "explain": "getAttribute('href') retourne la valeur brute écrite dans le HTML (\"/accueil\"), alors que la propriété .href retourne toujours l'URL absolue résolue par le navigateur (\"https://exemple.be/accueil\")."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Un développeur propose deux approches pour signaler visuellement les erreurs d'un formulaire : des styles inline (approche A) ou des classes CSS (approche B). Quel est le principal avantage de l'approche B sur l'approche A ?",
+      "code": "// Approche A — styles inline\nfunction marquerErreurA(champ, message) {\n  champ.style.border = '2px solid red';\n  champ.style.backgroundColor = '#fff0f0';\n  champ.nextElementSibling.textContent = message;\n}\n// Approche B — classes CSS\nfunction marquerErreurB(champ, message) {\n  champ.classList.add('champ-erreur');\n  const msgEl = champ.nextElementSibling;\n  msgEl.classList.add('message-erreur');\n  msgEl.textContent = message;\n}",
+      "options": [
+        "Aucun avantage réel : les deux approches sont strictement équivalentes en pratique.",
+        "L'approche B sépare mieux le style de la logique JS, centralise l'apparence dans le CSS (plus facile à maintenir, réutiliser et faire varier via un thème), et rend le style plus facile à surcharger (les styles inline ont une spécificité CSS très élevée). L'approche A peut rester justifiée pour un style ponctuel généré dynamiquement (ex. une couleur calculée à la volée) qui n'a pas de sens à définir dans une feuille CSS statique.",
+        "L'approche A est toujours interdite en JavaScript moderne.",
+        "L'approche B est plus rapide à exécuter dans tous les cas, sans exception."
+      ],
+      "correct": 1,
+      "explain": "Les classes CSS séparent présentation et logique, sont plus faciles à maintenir/réutiliser/thémer, et évitent les problèmes de spécificité liés au style inline. Le style inline garde son intérêt pour des valeurs calculées dynamiquement (ex. une couleur issue d'un calcul) qui n'ont pas leur place dans une feuille de style statique."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Un développeur utilise JSONP pour récupérer des données météo. Quelle est la principale faille de sécurité de cette approche ?",
+      "code": "window.afficherMeteo = function(data) {\n  document.getElementById('temp').textContent = data.temperature;\n};\nconst script = document.createElement('script');\nscript.src = `https://meteo-api.com/data?callback=afficherMeteo`;\ndocument.head.appendChild(script);",
+      "options": [
+        "JSONP ne supporte que la méthode GET, ce qui empêche d'envoyer des données",
+        "La fonction callback est trop lente car elle est dans l'objet window",
+        "JSONP ne fonctionne qu'en HTTP, pas en HTTPS",
+        "Le serveur peut retourner et exécuter du code JavaScript arbitraire dans le contexte de la page, permettant le vol de données ou la modification du DOM"
+      ],
+      "correct": 3,
+      "explain": "JSONP charge un <script> depuis un domaine externe : ce script s'exécute avec les pleins pouvoirs dans la page. Si le serveur est compromis ou malveillant, il peut exécuter n'importe quel code JavaScript dans le contexte de la page."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Voici un code d'envoi de formulaire avec fichier. Ce code contient une erreur subtile. Laquelle ?",
+      "code": "const formData = new FormData();\nformData.append('nom', 'Rapport Q3');\nformData.append('fichier', document.querySelector('#file-input').files[0]);\nconst response = await fetch('/api/documents/upload', {\n  method: 'POST',\n  headers: { 'Content-Type': 'multipart/form-data' },\n  body: formData\n});",
+      "options": [
+        "FormData ne supporte pas l'envoi de fichiers, il faut utiliser un Blob à la place",
+        "La méthode doit être PUT et non POST pour envoyer un FormData",
+        "Il faut appeler JSON.stringify(formData) avant de l'assigner à body",
+        "Il ne faut pas définir Content-Type manuellement avec FormData : le navigateur doit le générer automatiquement avec le boundary correct"
+      ],
+      "correct": 3,
+      "explain": "Avec FormData, le navigateur doit lui-même générer l'en-tête Content-Type avec le boundary multipart. En le fixant manuellement, le boundary manque et le serveur ne peut plus parser correctement le corps de la requête."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Un développeur doit stocker des images de catalogue (plusieurs dizaines de Mo) côté client pour permettre la navigation hors ligne. Quelle solution est la plus adaptée ?",
+      "options": [
+        "localStorage, car il est simple à utiliser et disponible sur tous les navigateurs modernes",
+        "Les cookies, car ils sont transmis automatiquement avec chaque requête HTTP",
+        "sessionStorage, pour que les images soient supprimées à la fermeture de l'onglet",
+        "La Cache API, conçue pour stocker des ressources HTTP volumineuses avec les Service Workers"
+      ],
+      "correct": 3,
+      "explain": "localStorage est limité (~5-10 Mo) et bloquant (synchrone), et les cookies sont bien trop petits (~4 Ko) et envoyés à chaque requête. La Cache API, utilisée avec les Service Workers, est conçue pour stocker de grosses ressources HTTP et permettre le fonctionnement hors ligne."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Un serveur envoie l'en-tête HTTP suivant au navigateur : Set-Cookie: auth_token=xyz789; HttpOnly; Secure; SameSite=Strict. Que se passe-t-il si console.log(document.cookie) est exécuté côté client ?",
+      "options": [
+        "Le cookie est visible dans document.cookie uniquement si la connexion est HTTPS (grâce à l'attribut Secure)",
+        "Le cookie apparaît dans document.cookie mais en lecture seule (on ne peut pas le modifier)",
+        "Une exception de sécurité est levée à l'exécution de document.cookie",
+        "Le cookie auth_token n'apparaît pas dans document.cookie ; il est invisible pour JavaScript"
+      ],
+      "correct": 3,
+      "explain": "L'attribut HttpOnly rend un cookie totalement inaccessible à JavaScript (document.cookie ne le montre jamais), ce qui protège contre le vol de session via une faille XSS."
+    },
+    {
+      "cat": "webapi",
+      "type": "text",
+      "q": "Quelle est la taille maximale approximative d'un cookie (en Ko) ? Répondez par un nombre entier.",
+      "accept": [
+        "4"
+      ],
+      "explain": "Un cookie est limité à environ 4 Ko par la plupart des navigateurs, ce qui le rend inadapté au stockage de grosses quantités de données."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Un développeur hésite entre Server-Sent Events (SSE) et WebSockets pour un tableau de bord affichant des métriques serveur actualisées toutes les 5 secondes. Le client n'a jamais besoin d'envoyer de données au serveur. Quelle affirmation est correcte concernant SSE dans ce contexte ?",
+      "options": [
+        "SSE est déprécié et remplacé par WebSockets dans tous les navigateurs modernes",
+        "SSE est inutilisable car il ne supporte pas le format JSON",
+        "SSE ne peut pas être utilisé car il nécessite que le client envoie des données régulièrement (heartbeat)",
+        "SSE est parfaitement adapté : il permet une communication serveur → client unidirectionnelle avec reconnexion automatique"
+      ],
+      "correct": 3,
+      "explain": "SSE est fait précisément pour ce cas : une communication unidirectionnelle serveur → client, avec reconnexion automatique intégrée, plus simple à mettre en place qu'un WebSocket quand le client n'a rien à envoyer."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Voici un extrait de la réponse envoyée par un serveur SSE, incluant un événement nommé alerte. Comment le client JavaScript récupère-t-il spécifiquement les messages de type alerte ?",
+      "code": "data: {\"temperature\": 22.5, \"humidite\": 65}\n\nevent: alerte\ndata: {\"message\": \"Seuil dépassé\"}",
+      "options": [
+        "source.on('alerte', handler)",
+        "source.onmessage reçoit tous les messages y compris les événements nommés",
+        "source.addEventListener('alerte', (event) => { ... })",
+        "source.onerror car les événements nommés sont traités comme des erreurs"
+      ],
+      "correct": 2,
+      "explain": "onmessage ne capte que les messages sans champ event (ou event: message). Pour les événements nommés (event: alerte), il faut utiliser source.addEventListener('alerte', handler)."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Analysez ce code :",
+      "code": "const capteur = { id: 42, actif: true, mesure: 18.5 };\nlocalStorage.setItem('capteur', capteur);\nconst lu = localStorage.getItem('capteur');\nconsole.log(lu);\nconsole.log(typeof lu);",
+      "options": [
+        "Une erreur est levée car setItem n'accepte pas d'objet",
+        "{\"id\":42,\"actif\":true,\"mesure\":18.5} puis \"string\"",
+        "null puis \"object\"",
+        "[object Object] puis \"string\""
+      ],
+      "correct": 3,
+      "explain": "localStorage.setItem() convertit toujours sa valeur en chaîne via String(), sans appeler JSON.stringify() automatiquement. Un objet devient donc la chaîne \"[object Object]\" (et non son JSON), de type \"string\". Il faut appeler JSON.stringify() soi-même avant de stocker un objet."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Que produit ce code ?",
+      "code": "const session = {\n  userId: 42,\n  token: \"abc123xyz\",\n  role: \"admin\",\n  expireAt: new Date(\"2026-12-31\")\n};\nconst json = JSON.stringify(session, (cle, valeur) => {\n  if (cle === \"token\") return undefined;\n  if (valeur instanceof Date) return valeur.getFullYear();\n  return valeur;\n});\nconsole.log(json);",
+      "options": [
+        "'{\"userId\":42,\"role\":\"admin\",\"expireAt\":2026}'",
+        "Une TypeError car les Date ne sont pas sérialisables",
+        "'{\"userId\":42,\"token\":\"abc123xyz\",\"role\":\"admin\",\"expireAt\":2026}'",
+        "'{\"userId\":42,\"role\":\"admin\",\"expireAt\":\"2026-12-31T00:00:00.000Z\"}'"
+      ],
+      "correct": 0,
+      "explain": "La fonction replacer de JSON.stringify() est appliquée à chaque paire clé/valeur : elle retire token (en retournant undefined) et remplace toute Date par son année. Le résultat ne contient donc que userId, role et expireAt=2026."
+    },
+    {
+      "cat": "modules",
+      "type": "mcq",
+      "q": "Comment importer un export par défaut depuis un module JavaScript ?",
+      "options": [
+        "import MaClasse from './MonModule';",
+        "import { MaClasse } from './MonModule';",
+        "import default as MaClasse from './MonModule';",
+        "const MaClasse = require('./MonModule');"
+      ],
+      "correct": 0,
+      "explain": "Un export default s'importe sans accolades, avec le nom de son choix : import NomChoisi from '...'."
+    },
+    {
+      "cat": "modules",
+      "type": "mcq",
+      "q": "Comment importer une classe en la renommant ?",
+      "options": [
+        "import { Personne as Person } from './personne.mjs';",
+        "import Personne rename Person from './personne.mjs';",
+        "import { Personne: Person } from './personne.mjs';",
+        "import Personne => Person from './personne.mjs';"
+      ],
+      "correct": 0,
+      "explain": "Le mot-clé as permet de renommer un export nommé lors de l'import : import { NomOriginal as NouveauNom } from '...'."
+    },
+    {
+      "cat": "modules",
+      "type": "mcq",
+      "q": "Considérez ces deux fichiers. Que se passe-t-il lors de l'exécution de main.js ?",
+      "code": "// === utils.js ===\nexport const VERSION = '2.0';\nexport default function saluer(nom) {\n  return `Bonjour, ${nom} !`;\n}\n\n// === main.js ===\nimport { saluer, VERSION } from './utils.js';\nconsole.log(saluer('Alice'));\nconsole.log(VERSION);",
+      "options": [
+        "Une erreur est levée : saluer ne peut pas être importé avec des accolades car c'est un export default.",
+        "Le code affiche undefined puis 2.0.",
+        "Le code affiche Bonjour, Alice ! puis 2.0.",
+        "Le code affiche Bonjour, Alice ! puis undefined car VERSION est un export nommé."
+      ],
+      "correct": 0,
+      "explain": "Un export default crée une liaison nommée \"default\", pas \"saluer\" : il n'existe donc aucun export nommé saluer dans le module. import { saluer } échoue au chargement du module (erreur de liaison, avant même l'exécution du code). Pour l'importer correctement, il aurait fallu écrire import saluer, { VERSION } from './utils.js'."
+    },
+    {
+      "cat": "tsbase",
+      "type": "text",
+      "q": "Quel est le résultat de ce code ?",
+      "code": "const dico = Object.create(null);\ndico.cle = \"valeur\";\nconsole.log(typeof dico);",
+      "accept": [
+        "object"
+      ],
+      "explain": "typeof retourne toujours \"object\" pour un objet, même créé avec Object.create(null) (qui n'a simplement pas de prototype, donc pas de méthodes héritées comme toString)."
+    },
+    {
+      "cat": "tsadv",
+      "type": "mcq",
+      "q": "Observez ces déclarations TypeScript. Quelle relation existe entre FichePublique et SansConfidentiel ?",
+      "code": "interface Employé {\n  id: number;\n  nom: string;\n  email: string;\n  salaire: number;\n  dateNaissance: Date;\n}\ntype FichePublique = Pick<Employé, \"id\" | \"nom\" | \"email\">;\ntype SansConfidentiel = Omit<Employé, \"salaire\" | \"dateNaissance\">;",
+      "options": [
+        "Les deux types sont structurellement identiques : ils contiennent exactement id, nom, email",
+        "SansConfidentiel contient toutes les propriétés de Employé sauf les exclues, ce qui inclut les 5 propriétés originales moins 2",
+        "FichePublique étend SansConfidentiel et ajoute des propriétés supplémentaires",
+        "Pick et Omit ne peuvent pas aboutir au même résultat, ils opèrent différemment"
+      ],
+      "correct": 1,
+      "explain": "Pick<T, K> sélectionne uniquement les clés listées (ici id, nom, email : 3 propriétés). Omit<T, K> retire les clés listées et garde le reste (ici 5 - 2 = 3 propriétés : id, nom, email aussi). Les deux types obtenus sont donc structurellement identiques."
+    },
+    {
+      "cat": "tsadv",
+      "type": "mcq",
+      "q": "Analysez ces types TypeScript. Quelles assignations provoquent une erreur TypeScript ?",
+      "code": "type Événement = \"créer\" | \"modifier\" | \"supprimer\";\ntype Gestionnaire = `on${Capitalize<Événement>}`;\nconst h1: Gestionnaire = \"onCréer\";\nconst h2: Gestionnaire = \"oncréer\";\nconst h3: Gestionnaire = \"supprimer\";",
+      "options": [
+        "h2 et h3 provoquent une erreur ; h1 est valide",
+        "Les trois assignations provoquent une erreur car on ne peut pas utiliser des accents dans des template literal types",
+        "h3 provoque une erreur ; h1 et h2 sont valides",
+        "Les trois assignations sont valides car TypeScript n'est pas sensible à la casse pour les string literals"
+      ],
+      "correct": 0,
+      "explain": "Gestionnaire vaut \"onCréer\" | \"onModifier\" | \"onSupprimer\" (Capitalize met en majuscule la première lettre). h1 est valide. h2 (\"oncréer\", sans majuscule) et h3 (\"supprimer\", sans le préfixe \"on\") ne correspondent à aucune des valeurs autorisées : TypeScript est sensible à la casse pour les string literal types."
+    },
+    {
+      "cat": "tsadv",
+      "type": "mcq",
+      "q": "Considérez ces types. Quelle affirmation décrit correctement les deux types obtenus ?",
+      "code": "type Rôle = \"admin\" | \"éditeur\" | \"lecteur\" | \"invité\";\ntype RôleActif = Exclude<Rôle, \"invité\">;\ntype RôlePrivilégié = Extract<Rôle, \"admin\" | \"éditeur\">;",
+      "options": [
+        "RôleActif = \"admin\" | \"éditeur\" | \"lecteur\" ; RôlePrivilégié = \"admin\" | \"éditeur\"",
+        "RôleActif = \"invité\" ; RôlePrivilégié = \"lecteur\" | \"invité\"",
+        "RôleActif = \"lecteur\" | \"invité\" ; RôlePrivilégié = \"lecteur\"",
+        "RôleActif = \"admin\" | \"éditeur\" | \"lecteur\" | \"invité\" ; RôlePrivilégié = \"admin\" | \"éditeur\" | \"lecteur\" | \"invité\""
+      ],
+      "correct": 0,
+      "explain": "Exclude<T, U> retire de T les membres présents dans U : RôleActif retire \"invité\" et garde les 3 autres. Extract<T, U> garde uniquement les membres de T présents dans U : RôlePrivilégié ne garde que \"admin\" et \"éditeur\"."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Quelle est la sortie du console.log() ?",
+      "code": "const capteur = \"temperature\";\nconst unite = \"C\";\nconst rapport = {\n  [capteur]: 36.6,\n  [`${capteur}_unite`]: unite\n};\nconsole.log(Object.keys(rapport));",
+      "options": [
+        "[\"temperature\", \"C\"]",
+        "Une erreur de syntaxe est levée",
+        "[\"capteur\", \"capteur_unite\"]",
+        "[\"temperature\", \"temperature_unite\"]"
+      ],
+      "correct": 3,
+      "explain": "Les crochets [capteur] créent une clé calculée dynamiquement : sa valeur (\"temperature\") devient le nom de la propriété, pas le nom \"capteur\" lui-même. Object.keys renvoie donc [\"temperature\", \"temperature_unite\"]."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Que vaut la variable resultat après ce code ?",
+      "code": "const commandes = ['cmd1', 'cmd2'];\nconst resultat = commandes.push('cmd3', 'cmd4');\nconsole.log(resultat);",
+      "options": [
+        "undefined",
+        "4",
+        "['cmd1', 'cmd2', 'cmd3', 'cmd4']",
+        "2"
+      ],
+      "correct": 1,
+      "explain": "push() ajoute les éléments au tableau (qui devient ['cmd1','cmd2','cmd3','cmd4']) et retourne la nouvelle longueur du tableau, soit 4 — pas le tableau lui-même."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Que vaut chaque variable après ce destructuring ?",
+      "code": "const produit = { nom: \"Clavier\", prix: 49.99 };\nconst { nom: libelle, prix: montant, tva = 0.21 } = produit;\nconsole.log(libelle, montant, tva);",
+      "options": [
+        "Une ReferenceError est levée car libelle n'est pas une propriété de produit",
+        "\"Clavier\" 49.99 0.21",
+        "undefined undefined 0.21",
+        "\"Clavier\" 49.99 undefined"
+      ],
+      "correct": 1,
+      "explain": "nom: libelle renomme la propriété nom dans la variable libelle. prix: montant fait de même pour prix. tva n'existe pas dans produit, donc la valeur par défaut 0.21 est utilisée."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Que vaut c (alt) à la fin de ce code ?",
+      "code": "const coordonnees = [48.85, 2.35];\nconst [lat, lng, alt = 0] = coordonnees;\nconsole.log(alt);",
+      "options": [
+        "undefined",
+        "Une RangeError est levée",
+        "null",
+        "0"
+      ],
+      "correct": 3,
+      "explain": "Le tableau n'a que 2 éléments : la 3e position (alt) est undefined, donc la valeur par défaut 0 s'applique."
+    },
+    {
+      "cat": "obj",
+      "type": "text",
+      "q": "Quelle valeur est assignée à resultat ?",
+      "code": "const appareil = { marque: \"Bosch\" };\nconst resultat = appareil.demarrer?.() ?? \"Indisponible\";\nconsole.log(resultat);",
+      "accept": [
+        "Indisponible",
+        "\"Indisponible\""
+      ],
+      "explain": "demarrer n'existe pas sur appareil : l'optional chaining ?. empêche l'erreur et retourne undefined au lieu d'appeler une fonction inexistante. ?? remplace ensuite ce undefined par \"Indisponible\"."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Voici deux implémentations d'une même opération (Version A avec forEach, Version B avec map). Quelle affirmation décrit le mieux la comparaison entre les deux ?",
+      "code": "// Version A\nconst labels = [];\nstocks.forEach(s => {\n  labels.push(`${s.produit}: ${s.qte} unités`);\n});\n// Version B\nconst labelsB = stocks.map(s => `${s.produit}: ${s.qte} unités`);",
+      "options": [
+        "Les deux versions produisent des résultats différents : forEach ne peut pas transformer un tableau.",
+        "Les deux versions produisent le même résultat, mais map() est généralement préférable ici : plus concis, plus lisible, et il exprime directement l'intention de transformer un tableau en un autre sans variable intermédiaire ni push manuel. forEach() reste pertinent quand on effectue des effets de bord (logs, appels API, etc.) sans construire de nouveau tableau.",
+        "forEach() est toujours plus performant que map() car il ne crée pas de nouveau tableau.",
+        "map() modifie le tableau original alors que forEach() ne le modifie jamais."
+      ],
+      "correct": 1,
+      "explain": "map() est idiomatique pour transformer un tableau en un autre : il évite la déclaration d'un tableau intermédiaire et les push manuels. forEach() garde son intérêt pour des effets de bord (ex. logger, envoyer une requête pour chaque élément) sans vouloir produire un nouveau tableau."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Quelle est la valeur de result1 et result2 ?",
+      "code": "let arr = [1, 2, 3];\nlet result1 = arr.forEach(x => x * 2);\nlet result2 = arr.map(x => x * 2);\nconsole.log(result1, Array.isArray(result2));",
+      "options": [
+        "undefined true",
+        "true true",
+        "[2,4,6] true",
+        "undefined false"
+      ],
+      "correct": 0,
+      "explain": "forEach() ne retourne jamais rien d'utile : result1 vaut undefined. map() retourne toujours un nouveau tableau : Array.isArray(result2) vaut true."
     }
   ]
 }
