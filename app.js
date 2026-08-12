@@ -91,13 +91,13 @@
   const MODES = {
     speed: {
       key: "speed", icon: "⚡", label: "Rapide",
-      desc: "15 questions au hasard, 20s par question. Pour un tour sous pression.",
-      count: 15, timerSeconds: 20,
+      desc: "15 questions au hasard, 60s par question. Pour un tour sous pression.",
+      count: 15, timerSeconds: 60,
     },
     standard: {
       key: "standard", icon: "▸", label: "Standard",
-      desc: "30 questions aléatoires, sans chrono. Le format classique.",
-      count: 30, timerSeconds: 0,
+      desc: "60 questions aléatoires, sans chrono. Le format classique.",
+      count: 60, timerSeconds: 0,
     },
     full: {
       key: "full", icon: "∎", label: "Complet",
