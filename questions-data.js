@@ -2344,7 +2344,6 @@ window.QUIZ_DATA = {
       "cat": "async",
       "type": "mcq",
       "q": "Que retourne une fonction déclarée avec async ?",
-      "code": "",
       "options": [
         "La valeur retournée par return",
         "undefined si pas de return explicite",
@@ -2382,7 +2381,6 @@ window.QUIZ_DATA = {
       "cat": "async",
       "type": "mcq",
       "q": "Dans le code précédent (étapeA lève une erreur, étapeB l'attend, principale l'entoure d'un try/catch), pourquoi les lignes \"B termine\" et \"principale continue\" ne s'affichent-elles jamais ?",
-      "code": "",
       "options": [
         "Parce que console.log() est asynchrone et n'a pas le temps de s'exécuter avant la fin du script",
         "Parce que l'erreur levée dans étapeA() rejette la promesse de await étapeA(), ce qui interrompt immédiatement la suite de étapeB() ; cette rejection remonte ensuite via await étapeB() et interrompt le bloc try de principale() avant la ligne suivante",
@@ -2410,7 +2408,6 @@ window.QUIZ_DATA = {
       "cat": "dom",
       "type": "mcq",
       "q": "Comment modifier le contenu textuel d'un élément en JavaScript ?",
-      "code": "",
       "options": [
         "element.text = \"Nouveau texte\"",
         "element.setText(\"Nouveau texte\")",
@@ -2476,7 +2473,6 @@ window.QUIZ_DATA = {
       "cat": "webapi",
       "type": "mcq",
       "q": "Que représente response.ok dans une réponse fetch ?",
-      "code": "",
       "options": [
         "true si le statut HTTP est entre 200 et 299",
         "true si la réponse contient des données",
@@ -2489,7 +2485,6 @@ window.QUIZ_DATA = {
       "cat": "webapi",
       "type": "mcq",
       "q": "Comment envoyer des données JSON dans le corps d'une requête avec Fetch ?",
-      "code": "",
       "options": [
         "En passant l'objet JavaScript directement à l'option body",
         "En passant l'objet JavaScript à l'option json",
@@ -2680,7 +2675,6 @@ window.QUIZ_DATA = {
       "cat": "obj",
       "type": "mcq",
       "q": "Pour rendre appConfig complètement immuable, y compris ses propriétés imbriquées comme database, que faut-il faire ?",
-      "code": "",
       "options": [
         "Appliquer Object.freeze() sur l'objet racine : cela suffit, la protection est automatiquement récursive",
         "Appliquer récursivement Object.freeze() sur chaque objet imbriqué (par exemple via une fonction utilitaire deepFreeze)",
@@ -2689,6 +2683,366 @@ window.QUIZ_DATA = {
       ],
       "correct": 1,
       "explain": "Comme freeze() n'agit que sur le premier niveau, il faut geler chaque objet imbriqué individuellement — typiquement via une fonction récursive (deepFreeze) qui parcourt toutes les propriétés objet et leur applique Object.freeze()."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Observez le code suivant. Que s'affiche-t-il dans la console ?",
+      "code": "function resumer(label, ...valeurs) {\n  console.log(typeof valeurs);\n  console.log(Array.isArray(valeurs));\n  console.log(valeurs.length);\n}\nresumer(\"températures\", 18, 22, 25, 19);",
+      "options": [
+        "array\ntrue\n4",
+        "object\ntrue\n4",
+        "object\nfalse\n4",
+        "object\ntrue\n5"
+      ],
+      "correct": 1,
+      "explain": "Le paramètre rest (...valeurs) est toujours un véritable tableau : typeof vaut \"object\" (il n'existe pas de type \"array\"), Array.isArray() vaut true, et valeurs ne contient que les arguments après label, soit [18, 22, 25, 19] → longueur 4."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Observez le code suivant. Que s'affiche-t-il dans la console ?",
+      "code": "const Vehicule = (marque, annee) => {\n  this.marque = marque;\n  this.annee = annee;\n};\ntry {\n  const v = new Vehicule(\"Toyota\", 2023);\n  console.log(v.marque);\n} catch (e) {\n  console.log(e.constructor.name);\n}",
+      "options": [
+        "Toyota",
+        "SyntaxError",
+        "TypeError",
+        "undefined"
+      ],
+      "correct": 2,
+      "explain": "Les arrow functions n'ont pas de mécanisme interne [[Construct]] : elles ne peuvent jamais être utilisées avec new. new Vehicule(...) lève donc une TypeError (\"Vehicule is not a constructor\"), interceptée par le catch qui affiche le nom de la classe d'erreur."
+    },
+    {
+      "cat": "fn",
+      "type": "mcq",
+      "q": "Observez le code suivant. Que s'affiche-t-il dans la console ?",
+      "code": "const resultat = (function(base) {\n  const tva = 0.21;\n  return base * (1 + tva);\n})(200);\nconsole.log(resultat);\nconsole.log(typeof tva);",
+      "options": [
+        "242 puis une ReferenceError",
+        "200 puis \"number\"",
+        "242 puis \"number\"",
+        "242 puis \"undefined\""
+      ],
+      "correct": 3,
+      "explain": "resultat = 200 * 1.21 = 242. tva est déclarée avec const uniquement à l'intérieur de l'IIFE : elle n'existe pas dans la portée extérieure. Or typeof est spécialement conçu pour NE PAS lever de ReferenceError sur un identifiant non résolu : il renvoie simplement la chaîne \"undefined\"."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Ce code enchaîne trois opérations asynchrones avec des callbacks (callback hell). Pour le refactoriser en Promises + async/await, quelle est l'approche correcte de \"promisification\" d'une fonction comme connecterBD(callback) ?",
+      "code": "function connecterBD(callback) {\n  setTimeout(() => callback(null, { connexion: \"active\" }), 100);\n}",
+      "options": [
+        "Envelopper l'appel dans une Promise, en résolvant ou rejetant selon le résultat du callback : new Promise((resolve, reject) => connecterBD((err, res) => err ? reject(err) : resolve(res)))",
+        "Ajouter simplement le mot-clé async devant connecterBD sans autre modification",
+        "Remplacer setTimeout par Promise.resolve() à l'intérieur de connecterBD",
+        "Appeler connecterBD().then() directement, car toute fonction avec callback retourne déjà une Promise"
+      ],
+      "correct": 0,
+      "explain": "Une fonction basée sur un callback error-first ne devient pas une Promise automatiquement. Il faut l'envelopper explicitement dans un new Promise(...), en appelant resolve() ou reject() selon que le callback reçoit une erreur ou un résultat."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Une fois connecterBD, requêter et formater promisifiées, comment les enchaîner proprement avec async/await tout en gérant les erreurs ?",
+      "options": [
+        "Dans une fonction async, avec un await devant chaque appel, le tout entouré d'un bloc try/catch : toute erreur rejetée par une étape est interceptée par le catch",
+        "En gardant les callbacks imbriqués : async/await ne peut pas remplacer les callbacks",
+        "En ajoutant un .then() après chaque await, ce qui est obligatoire avec async/await",
+        "En appelant les trois fonctions en parallèle avec Promise.all(), peu importe qu'elles dépendent les unes des autres"
+      ],
+      "correct": 0,
+      "explain": "async/await transforme les appels chaînés en code séquentiel lisible : chaque étape est attendue avec await, et try/catch remplace élégamment la répétition de vérifications d'erreur (if (err) { ... return; }) à chaque niveau de callback."
+    },
+    {
+      "cat": "async",
+      "type": "mcq",
+      "q": "Ces deux fonctions chargent les mêmes données. Laquelle est la plus rapide si chaque fetch*() prend 1 seconde ?",
+      "code": "// Version A\nasync function chargerA() {\n  const produits = await fetchProduits();\n  const stocks = await fetchStocks();\n  return { produits, stocks };\n}\n// Version B\nasync function chargerB() {\n  const [produits, stocks] = await Promise.all([\n    fetchProduits(),\n    fetchStocks()\n  ]);\n  return { produits, stocks };\n}",
+      "options": [
+        "Impossible à déterminer sans connaître le contenu des fonctions",
+        "La version A est plus rapide car elle évite le overhead de Promise.all()",
+        "Les deux versions ont la même durée",
+        "La version B est plus rapide (~1s contre ~2s)"
+      ],
+      "correct": 3,
+      "explain": "chargerA attend fetchProduits() (1s) avant même de démarrer fetchStocks() : exécution séquentielle, ~2s au total. chargerB lance les deux requêtes en parallèle via Promise.all(), qui attend la plus longue des deux : ~1s au total."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Que produit ce code ?",
+      "code": "class Compte {\n  #solde = 0;\n  constructor(solde) {\n    this.#solde = solde;\n  }\n  getSolde() {\n    return this.#solde;\n  }\n}\nclass CompteEpargne extends Compte {\n  afficherSolde() {\n    return this.#solde; // accès depuis la sous-classe\n  }\n}\nconst ce = new CompteEpargne(1000);\nconsole.log(ce.getSolde());\nconsole.log(ce.afficherSolde());",
+      "options": [
+        "Une erreur de syntaxe est levée car #solde n'est pas accessible dans la sous-classe CompteEpargne.",
+        "Le code affiche 1000 puis 1000 car les sous-classes héritent des champs privés.",
+        "Le code affiche 1000 puis 0 car le champ privé est réinitialisé dans la sous-classe.",
+        "Le code affiche 1000 puis undefined."
+      ],
+      "correct": 0,
+      "explain": "Les champs privés (#solde) sont strictement scopés à la classe qui les déclare : ils ne sont PAS hérités ni accessibles depuis une sous-classe. Référencer this.#solde dans CompteEpargne (où #solde n'est jamais déclaré) est une erreur de syntaxe détectée à l'analyse du code, avant même l'exécution."
+    },
+    {
+      "cat": "oop",
+      "type": "mcq",
+      "q": "Quel sera le résultat de ce code ?",
+      "code": "class Compte {\n  #solde = 100;\n\n  getSolde() {\n    return this.#solde;\n  }\n}\nlet compte = new Compte();\nconsole.log(compte.#solde);",
+      "options": [
+        "SyntaxError: Private field '#solde' must be declared in an enclosing class",
+        "100",
+        "undefined",
+        "null"
+      ],
+      "correct": 0,
+      "explain": "Un champ privé (#solde) n'est accessible que depuis l'intérieur de la classe qui le déclare. Y accéder depuis l'extérieur (ici, au niveau du script, hors de toute classe) est une erreur de syntaxe détectée avant même l'exécution — pas une simple undefined ou une erreur d'exécution."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Quel code ajoute correctement un paragraphe à la fin du body ?",
+      "options": [
+        "document.body.innerHTML += 'Hello';",
+        "let p = document.createElement('p'); p.textContent = 'Hello'; document.body.appendChild(p);",
+        "document.body.appendChild('<p>Hello</p>');",
+        "document.createElement('<p>Hello</p>');"
+      ],
+      "correct": 1,
+      "explain": "appendChild() attend un vrai Node, pas une chaîne : passer une string (option c) lève une TypeError. createElement() attend un nom de balise (\"p\"), pas du HTML (option d). L'option a ajoute du texte brut sans créer d'élément <p>. La méthode correcte crée l'élément, fixe son texte, puis l'attache au DOM."
+    },
+    {
+      "cat": "dom",
+      "type": "mcq",
+      "q": "Considérez ce HTML et ce script. Que retourne zone.textContent ?",
+      "code": "<div id=\"zone\">\n  <strong>Alerte</strong> : mise à jour requise\n</div>\n\nconst zone = document.getElementById('zone');\nconsole.log(zone.textContent);",
+      "options": [
+        "Uniquement \"Alerte\" (le texte dans le strong)",
+        "La chaîne HTML \"<strong>Alerte</strong> : mise à jour requise\"",
+        "null",
+        "Le texte brut \"Alerte : mise à jour requise\" (sans balises HTML, avec éventuels espaces/sauts de ligne)"
+      ],
+      "correct": 3,
+      "explain": "textContent concatène tout le texte des nœuds descendants, en ignorant les balises HTML mais en conservant les espaces/retours à la ligne du code source. Contrairement à innerHTML, il ne renvoie jamais le balisage."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Analysez ce code. Que s'affiche-t-il dans la console ?",
+      "code": "const capteur = { id: 42, actif: true, mesure: 18.5 };\nlocalStorage.setItem('capteur', capteur);\nconst lu = localStorage.getItem('capteur');\nconsole.log(lu);\nconsole.log(typeof lu);",
+      "options": [
+        "null puis \"object\"",
+        "Une erreur est levée car setItem n'accepte pas d'objet",
+        "[object Object] puis \"string\"",
+        "{\"id\":42,\"actif\":true,\"mesure\":18.5} puis \"string\""
+      ],
+      "correct": 2,
+      "explain": "localStorage.setItem() convertit systématiquement sa valeur en chaîne (via String()), sans JSON.stringify automatique. Pour un objet simple, cette conversion appelle son toString() par défaut, qui renvoie \"[object Object]\" — pas sa représentation JSON. localStorage.getItem() retourne toujours une string."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Un script JavaScript sur https://app.helmo.be effectue cette requête. Pourquoi déclenchera-t-elle une requête preflight (OPTIONS) ?",
+      "code": "const response = await fetch('https://api.externe.com/donnees', {\n  method: 'DELETE',\n  headers: {\n    'Content-Type': 'application/json',\n    'X-Custom-Token': 'abc123'\n  }\n});",
+      "options": [
+        "Le preflight est déclenché car la requête utilise HTTPS",
+        "La méthode DELETE et le header personnalisé X-Custom-Token ne font pas partie des critères d'une requête simple",
+        "Toutes les requêtes cross-origin déclenchent toujours un preflight, quelle que soit la méthode",
+        "Le preflight est déclenché uniquement parce que le Content-Type est application/json"
+      ],
+      "correct": 1,
+      "explain": "Une requête cross-origin \"simple\" (sans preflight) doit utiliser GET/HEAD/POST et des headers limités à une liste précise. Ici, DELETE n'est pas une méthode simple, et X-Custom-Token n'est pas un header autorisé sans preflight : chacun de ces deux éléments suffirait à lui seul à déclencher la requête OPTIONS préalable."
+    },
+    {
+      "cat": "webapi",
+      "type": "mcq",
+      "q": "Exécutez mentalement ce code (localStorage est vide au départ). Que s'affiche-t-il ?",
+      "code": "localStorage.setItem('couleur', 'bleu');\nlocalStorage.setItem('taille', 'M');\nlocalStorage.setItem('couleur', 'rouge');\nconsole.log(localStorage.length);",
+      "options": [
+        "2",
+        "1",
+        "3",
+        "0"
+      ],
+      "correct": 0,
+      "explain": "setItem() sur une clé déjà existante écrase seulement sa valeur, sans créer de nouvelle entrée. Il n'y a donc que 2 clés distinctes au final : couleur (valeur \"rouge\") et taille."
+    },
+    {
+      "cat": "tsbase",
+      "type": "mcq",
+      "q": "Considérez ce code TypeScript compilé et exécuté. Quelle est la sortie affichée ?",
+      "code": "enum Priorite {\n  Basse,\n  Moyenne,\n  Haute\n}\nconsole.log(Priorite.Moyenne);\nconsole.log(Priorite[1]);",
+      "options": [
+        "1 puis undefined",
+        "\"Moyenne\" puis 1",
+        "1 puis \"Moyenne\"",
+        "2 puis \"Haute\""
+      ],
+      "correct": 2,
+      "explain": "Un enum numérique par défaut commence à 0 : Basse=0, Moyenne=1, Haute=2. Priorite.Moyenne vaut donc 1. Les enums numériques génèrent aussi un mapping inversé automatique : Priorite[1] renvoie le nom \"Moyenne\"."
+    },
+    {
+      "cat": "tsbase",
+      "type": "text",
+      "q": "Que vaut le type Clés dans ce code ? Donnez la valeur exacte du type.",
+      "code": "interface Facture {\n  numéro: string;\n  montant: number;\n  payée: boolean;\n}\ntype Clés = keyof Facture;",
+      "accept": [
+        "\"numéro\" | \"montant\" | \"payée\"",
+        "numéro | montant | payée",
+        "'numéro' | 'montant' | 'payée'"
+      ],
+      "explain": "keyof produit une union des noms de propriétés de l'interface, sous forme de types littéraux de chaîne : \"numéro\" | \"montant\" | \"payée\"."
+    },
+    {
+      "cat": "tsbase",
+      "type": "text",
+      "q": "Quel est le nom du fichier de configuration standard qui contient les options de compilation d'un projet TypeScript ?",
+      "accept": [
+        "tsconfig.json"
+      ],
+      "explain": "tsconfig.json est le fichier standard placé à la racine d'un projet TypeScript : il définit les options du compilateur (target, module, strict, outDir, etc.) et quels fichiers inclure/exclure."
+    },
+    {
+      "cat": "tsadv",
+      "type": "mcq",
+      "q": "Observez ce code TypeScript. Quel est le type exact de Session ?",
+      "code": "function créerSession(userId: string, durée: number) {\n  return {\n    token: Math.random().toString(36),\n    userId,\n    expiresIn: durée * 60\n  };\n}\ntype Session = ReturnType<typeof créerSession>;\nconst s: Session = {\n  token: \"abc123\",\n  userId: \"U01\",\n  expiresIn: 3600\n};",
+      "options": [
+        "typeof créerSession retourne le type de la valeur retournée par l'appel, pas le type de la fonction",
+        "{ token: string; userId: string; expiresIn: number }",
+        "Erreur car ReturnType ne fonctionne pas avec typeof, il faut annoter le type de retour explicitement",
+        "{ token: number; userId: string; expiresIn: number } car Math.random() retourne un number"
+      ],
+      "correct": 1,
+      "explain": "typeof créerSession donne le type de la fonction elle-même. ReturnType<...> extrait ensuite le type de sa valeur de retour : { token: string; userId: string; expiresIn: number }, puisque Math.random().toString(36) est une string."
+    },
+    {
+      "cat": "tsadv",
+      "type": "text",
+      "q": "Quel est le type résultant de cette expression TypeScript ? Donnez le type exact de Texte (sous forme de l'union réduite).",
+      "code": "type MaybeTexte = string | null | undefined | number;\ntype Texte = NonNullable<MaybeTexte>;",
+      "accept": [
+        "string | number",
+        "number | string"
+      ],
+      "explain": "NonNullable<T> retire null et undefined d'un type union, sans toucher aux autres membres. MaybeTexte perd donc null et undefined, et Texte devient string | number."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Que produit ce code (en mode non-strict) ?",
+      "code": "const capteur = {};\nObject.defineProperty(capteur, \"id\", {\n  value: \"SEN-007\",\n  writable: false,\n  enumerable: true,\n  configurable: false\n});\ncapteur.id = \"SEN-999\";\ncapteur.mesure = 21.3;\nconsole.log(capteur.id);\nconsole.log(capteur.mesure);\nconsole.log(Object.keys(capteur));",
+      "options": [
+        "\"SEN-007\", 21.3, [\"id\", \"mesure\"]",
+        "\"SEN-007\", 21.3, [\"mesure\"]",
+        "Une TypeError est levée lors de capteur.id = \"SEN-999\"",
+        "\"SEN-999\", 21.3, [\"id\", \"mesure\"]"
+      ],
+      "correct": 0,
+      "explain": "writable: false rend la propriété en lecture seule. En mode NON strict, une tentative d'écriture échoue silencieusement (pas d'erreur) : capteur.id reste \"SEN-007\". capteur.mesure est ajoutée normalement. Object.keys() retourne les propriétés énumérables propres : id (enumerable: true) et mesure."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Examinez ce code. Que produit chaque console.log() ?",
+      "code": "const registre = {};\nObject.defineProperty(registre, \"version\", {\n  value: \"2.1.0\",\n  writable: false,\n  enumerable: false,\n  configurable: false\n});\nObject.defineProperty(registre, \"compteurAcces\", {\n  value: 0,\n  writable: true,\n  enumerable: false,\n  configurable: false\n});\nregistre.nom = \"Registre principal\";\nconsole.log(registre.version);\nconsole.log(Object.keys(registre));\nconsole.log(JSON.stringify(registre));",
+      "options": [
+        "\"2.1.0\" / [\"nom\"] / {\"nom\":\"Registre principal\"}",
+        "\"2.1.0\" / [\"version\",\"compteurAcces\",\"nom\"] / {\"version\":\"2.1.0\",\"compteurAcces\":0,\"nom\":\"Registre principal\"}",
+        "undefined / [\"nom\"] / {\"nom\":\"Registre principal\"}",
+        "\"2.1.0\" / [] / \"{}\""
+      ],
+      "correct": 0,
+      "explain": "L'accès direct registre.version fonctionne toujours (\"2.1.0\"), peu importe enumerable. En revanche, Object.keys() et JSON.stringify() n'incluent que les propriétés énumérables : version et compteurAcces (enumerable: false) sont ignorées, seule nom (ajoutée normalement, donc énumérable par défaut) apparaît."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Dans le code précédent (registre avec version et compteurAcces définies via Object.defineProperty), quel est l'intérêt de mettre enumerable: false sur ces deux propriétés ?",
+      "options": [
+        "Cela empêche complètement toute lecture de ces propriétés depuis l'extérieur de l'objet",
+        "Cela masque ces propriétés \"techniques\"/internes des boucles for...in, de Object.keys() et de la sérialisation JSON, tout en les laissant accessibles directement via registre.version",
+        "Cela rend automatiquement les propriétés en lecture seule (non modifiables)",
+        "Cela empêche la propriété d'être héritée par les objets qui héritent de registre"
+      ],
+      "correct": 1,
+      "explain": "enumerable: false ne bloque pas l'accès direct (registre.version fonctionne toujours), mais masque la propriété des mécanismes d'énumération courants (for...in, Object.keys, JSON.stringify) : utile pour des métadonnées internes qu'on ne veut pas voir apparaître dans une sérialisation ou un parcours de l'objet."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Toujours avec registre (version définie via defineProperty avec writable: false), si on tente registre.version = \"3.0.0\" en mode strict, que se passe-t-il ?",
+      "code": "\"use strict\";\nregistre.version = \"3.0.0\";",
+      "options": [
+        "La valeur est modifiée silencieusement, sans erreur",
+        "Rien ne se passe, l'assignation est simplement ignorée",
+        "Une TypeError est levée car la propriété est writable: false",
+        "Une SyntaxError est levée à la compilation"
+      ],
+      "correct": 2,
+      "explain": "En mode strict, toute tentative d'écriture sur une propriété non-writable lève une TypeError (contrairement au mode non-strict où l'échec est silencieux)."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Quelle est la valeur de tableau ?",
+      "code": "const tableau = Array.from({ length: 4 }, (_, i) => i * 3 + 1);\nconsole.log(tableau);",
+      "options": [
+        "[3, 6, 9, 12]",
+        "[1, 4, 7, 10, 13]",
+        "[0, 3, 6, 9]",
+        "[1, 4, 7, 10]"
+      ],
+      "correct": 3,
+      "explain": "Array.from({length:4}, ...) crée 4 éléments (indices i = 0,1,2,3), chacun calculé par i*3+1 : 1, 4, 7, 10."
+    },
+    {
+      "cat": "obj",
+      "type": "text",
+      "q": "Quelle valeur est affichée dans la console ? Répondez par le mot exact affiché.",
+      "code": "const appareil = {\n  nom: \"Thermomètre\"\n};\nconsole.log(appareil.config?.seuil);",
+      "accept": [
+        "undefined"
+      ],
+      "explain": "appareil.config n'existe pas : l'optional chaining (?.) court-circuite immédiatement et renvoie undefined, sans tenter d'accéder à .seuil."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Quelles sont les valeurs de x, y et reste après ce code ?",
+      "code": "let x = 10, y = 20;\n[x, y] = [y, x];\nconst tableau = [1, 2, 3, 4, 5];\nconst [, second, ...reste] = tableau;\nconsole.log(x, y);\nconsole.log(second, reste);",
+      "options": [
+        "20 10 puis 2 [3, 4, 5]",
+        "20 10 puis 1 [2, 3, 4, 5]",
+        "10 20 puis 2 [3, 4, 5]",
+        "20 10 puis 2 [4, 5]"
+      ],
+      "correct": 0,
+      "explain": "La déstructuration [x, y] = [y, x] échange les valeurs : x=20, y=10. Pour tableau, la virgule vide saute le premier élément (1), second capture le deuxième (2), et ...reste (rest pattern) récupère tous les éléments restants : [3, 4, 5]."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Comment vérifier si la propriété \"age\" existe dans l'objet personne ?",
+      "options": [
+        "personne.exists(\"age\")",
+        "\"age\" in personne",
+        "personne.hasOwnProperty(\"age\")",
+        "typeof personne.age !== \"undefined\""
+      ],
+      "correct": 1,
+      "explain": "\"age\" in personne est l'opérateur standard pour tester l'existence d'une propriété (propre ou héritée). personne.exists() n'est pas une méthode JavaScript. hasOwnProperty() est aussi valide mais ne teste que les propriétés propres (pas héritées). Le test via typeof a un piège : il renvoie faussement false si la propriété existe mais vaut explicitement undefined."
+    },
+    {
+      "cat": "obj",
+      "type": "mcq",
+      "q": "Quel est l'affichage produit par ce code ?",
+      "code": "const capteurs = ['temp', 'pression', 'humidite', 'luminosite'];\nconsole.log(capteurs.at(-2));\nconsole.log(capteurs.at(10));",
+      "options": [
+        "'humidite' puis undefined",
+        "'pression' puis undefined",
+        "'luminosite' puis undefined",
+        "'humidite' puis null"
+      ],
+      "correct": 0,
+      "explain": "at() accepte des index négatifs pour compter depuis la fin : at(-2) correspond à l'avant-dernier élément, soit 'humidite' (index 2 sur un tableau de longueur 4). at(10) est hors limites et renvoie undefined (jamais une erreur, ni null)."
     }
   ]
 };
