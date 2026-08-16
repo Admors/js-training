@@ -2723,7 +2723,7 @@ window.QUIZ_DATA = {
         "242 puis \"number\"",
         "242 puis \"undefined\""
       ],
-      "correct": 3,
+      "correct": 1,
       "explain": "resultat = 200 * 1.21 = 242. tva est déclarée avec const uniquement à l'intérieur de l'IIFE : elle n'existe pas dans la portée extérieure. Or typeof est spécialement conçu pour NE PAS lever de ReferenceError sur un identifiant non résolu : il renvoie simplement la chaîne \"undefined\"."
     },
     {
